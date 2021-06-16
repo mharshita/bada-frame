@@ -46,7 +46,6 @@ module.exports = withWorkbox(withBundleAnalyzer({
             }),
         );
         if (
-            false &&
             SENTRY_DSN &&
             SENTRY_ORG &&
             SENTRY_PROJECT &&
@@ -55,7 +54,7 @@ module.exports = withWorkbox(withBundleAnalyzer({
         ) {
             config.plugins.push(
                 new SentryWebpackPlugin({
-                    include: '.next',
+                    include: ['.next/static/chunks'],
                     ignore: ['node_modules'],
                     stripPrefix: ['webpack://_N_E/'],
                     urlPrefix: `~${basePath}/_next`,
