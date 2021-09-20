@@ -6,6 +6,8 @@ import {
 } from 'services/collectionService';
 import { getSelectedFiles } from 'utils/file';
 import { File } from 'services/fileService';
+import { getData, LS_KEYS } from 'utils/storage/localStorage';
+import { User } from 'services/userService';
 
 export async function addFilesToCollection(
     setCollectionSelectorView: (value: boolean) => void,
@@ -36,4 +38,16 @@ export async function addFilesToCollection(
 
 export function getSelectedCollection(collectionID: number, collections) {
     return collections.find((collection) => collection.id === collectionID);
+}
+
+export function addIsSharedProperty(collections: Collection[]) {
+    const user: User = getData(LS_KEYS.USER);
+    for (const collection of collections) {
+        if (user.id === collection.owner.id) {
+            collection.iSharedCollection = false;
+        } else {
+            collection.iSharedCollection = true;
+        }
+    }
+    return collections;
 }

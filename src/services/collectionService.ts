@@ -39,6 +39,7 @@ export interface Collection {
     encryptedKey: string;
     keyDecryptionNonce: string;
     isDeleted: boolean;
+    iSharedCollection?: boolean;
 }
 
 interface collectionAttributes {

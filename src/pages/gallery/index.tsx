@@ -45,7 +45,7 @@ import EnteSpinner from 'components/EnteSpinner';
 import { LoadingOverlay } from 'components/LoadingOverlay';
 import PhotoFrame from 'components/PhotoFrame';
 import { getSelectedFileIds, sortFilesIntoCollections } from 'utils/file';
-import { addFilesToCollection } from 'utils/collection';
+import { addFilesToCollection, addIsSharedProperty } from 'utils/collection';
 import SearchBar, { DateValue } from 'components/SearchBar';
 import { Bbox } from 'services/searchService';
 import SelectedFileOptions from 'components/pages/gallery/SelectedFileOptions';
@@ -286,10 +286,19 @@ export default function Gallery() {
         }
     };
 
-    const setDerivativeState = async (collections, files) => {
-        const nonEmptyCollections = getNonEmptyCollections(collections, files);
-        const collectionsAndTheirLatestFile =
-            await getCollectionsAndTheirLatestFile(nonEmptyCollections, files);
+    const setDerivativeState = async (
+        collections: Collection[],
+        files: File[]
+    ) => {
+        const collectionsWithIsSharedInfo = addIsSharedProperty(collections);
+        const nonEmptyCollections = getNonEmptyCollections(
+            collectionsWithIsSharedInfo,
+            files
+        );
+        const collectionsAndTheirLatestFile = getCollectionsAndTheirLatestFile(
+            nonEmptyCollections,
+            files
+        );
         const collectionWiseFiles = sortFilesIntoCollections(files);
         const collectionFilesCount = new Map<number, number>();
         for (const [id, files] of collectionWiseFiles) {
