@@ -168,7 +168,8 @@ export default function Gallery() {
     const [collectionFilesCount, setCollectionFilesCount] =
         useState<Map<number, number>>();
     const [activeCollection, setActiveCollection] = useState(0);
-
+    const [isSharedCollectionActive, setIsSharedCollectionActive] =
+        useState(false);
     useEffect(() => {
         const key = getKey(SESSION_KEYS.ENCRYPTION_KEY);
         if (!key) {
@@ -218,7 +219,16 @@ export default function Gallery() {
         router.push(href, undefined, { shallow: true });
     }, [activeCollection]);
 
+    useEffect(
+        () => setIsSharedCollectionActive(isSharedCollection(activeCollection)),
+        [activeCollection]
+    );
+
     const selected = allSelected[activeCollection] ?? { count: 0 };
+
+    const isSharedCollection = (collectionID: number) =>
+        !!collections.find((collection) => collection.id === collectionID)
+            ?.iSharedCollection;
 
     const setSelected = (
         selectedStateSetter:
@@ -512,8 +522,9 @@ export default function Gallery() {
                     setSearchStats={setSearchStats}
                     deleted={deleted}
                     setDialogMessage={setDialogMessage}
+                    isSharedCollection={isSharedCollectionActive}
                 />
-                {selected.count > 0 && (
+                {selected.count > 0 && !isSharedCollectionActive && (
                     <SelectedFileOptions
                         addToCollectionHelper={addToCollectionHelper}
                         showCreateCollectionModal={showCreateCollectionModal}
