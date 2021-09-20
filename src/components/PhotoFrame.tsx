@@ -146,6 +146,7 @@ interface Props {
     setSearchStats: setSearchStats;
     deleted?: number[];
     setDialogMessage: SetDialogMessage;
+    isSharedCollection: boolean;
 }
 
 const PhotoFrame = ({
@@ -163,6 +164,7 @@ const PhotoFrame = ({
     setSearchStats,
     deleted,
     setDialogMessage,
+    isSharedCollection,
 }: Props) => {
     const [open, setOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -258,7 +260,7 @@ const PhotoFrame = ({
             file={file[index]}
             updateUrl={updateUrl(file[index].dataIndex)}
             onClick={onThumbnailClick(index)}
-            selectable
+            selectable={!isSharedCollection}
             onSelect={handleSelect(file[index].id)}
             selected={selected[file[index].id]}
             selectOnClick={selected.count > 0}
@@ -728,6 +730,7 @@ const PhotoFrame = ({
                         gettingData={getSlideData}
                         favItemIds={favItemIds}
                         loadingBar={loadingBar}
+                        isSharedCollection={isSharedCollection}
                     />
                 </Container>
             ) : (
