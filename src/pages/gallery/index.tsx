@@ -79,9 +79,13 @@ const AlertContainer = styled.div`
     text-align: center;
 `;
 
-export type selectedState = {
+export type SelectedState = {
     [k: number]: boolean;
     count: number;
+};
+
+export type AllSelectedState = {
+    [k: number]: SelectedState;
 };
 export type SetFiles = React.Dispatch<React.SetStateAction<File[]>>;
 export type SetCollections = React.Dispatch<React.SetStateAction<Collection[]>>;
@@ -125,7 +129,8 @@ export default function Gallery() {
     );
     const [isFirstLoad, setIsFirstLoad] = useState(false);
     const [isFirstFetch, setIsFirstFetch] = useState(false);
-    const [selected, setSelected] = useState<selectedState>({ count: 0 });
+    const [allSelected, setAllSelected] = useState<AllSelectedState>({});
+
     const [dialogMessage, setDialogMessage] = useState<MessageAttributes>();
     const [dialogView, setDialogView] = useState(false);
     const [planModalView, setPlanModalView] = useState(false);
@@ -212,6 +217,26 @@ export default function Gallery() {
         }`;
         router.push(href, undefined, { shallow: true });
     }, [activeCollection]);
+
+    const selected = allSelected[activeCollection] ?? { count: 0 };
+
+    const setSelected = (
+        selectedStateSetter:
+            | SelectedState
+            | ((selected: SelectedState) => SelectedState)
+    ) => {
+        let newSelectedValue: SelectedState = { count: 0 };
+
+        if (typeof selectedStateSetter === 'function') {
+            newSelectedValue = selectedStateSetter(selected);
+        } else {
+            newSelectedValue = selectedStateSetter;
+        }
+        setAllSelected((allSelected) => ({
+            ...allSelected,
+            [activeCollection]: newSelectedValue,
+        }));
+    };
 
     const syncWithRemote = async (force = false, silent = false) => {
         if (syncInProgress.current && !force) {
