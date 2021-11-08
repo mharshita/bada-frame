@@ -35,7 +35,7 @@ function TwoFactorModal(props: Props) {
             setTwoFactorStatus(isTwoFactorEnabled);
             setData(LS_KEYS.USER, {
                 ...getData(LS_KEYS.USER),
-                isTwoFactorEnabled: false,
+                isTwoFactorEnabled,
             });
         };
         main();
