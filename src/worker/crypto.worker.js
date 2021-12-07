@@ -20,6 +20,10 @@ export class Crypto {
         return libsodium.decryptChaCha(fileData, header, key);
     }
 
+    async decryptFilePart(fileData, header, key) {
+        return libsodium.decryptChaChaPart(fileData, header, key);
+    }
+
     async encryptMetadata(metadata, key) {
         const encodedMetadata = new TextEncoder().encode(
             JSON.stringify(metadata)

@@ -117,7 +117,7 @@ class DownloadManager {
                 { 'X-Auth-Token': token },
                 { responseType: 'arraybuffer' }
             );
-            const decrypted: any = await worker.decryptFile(
+            const decrypted: any = await worker.decryptFilePart(
                 new Uint8Array(resp.data),
                 await worker.fromB64(file.file.decryptionHeader),
                 file.key

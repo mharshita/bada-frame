@@ -1,4 +1,5 @@
 import sodium, { StateAddress } from 'libsodium-wrappers';
+import sodiumSumo from 'libsodium-wrappers-sumo';
 import { ENCRYPTION_CHUNK_SIZE } from 'types';
 
 export async function decryptChaChaOneShot(
@@ -17,6 +18,70 @@ export async function decryptChaChaOneShot(
         null
     );
     return pullResult.message;
+}
+
+// ** Experimental - don't use in production **
+// ** doesn't check for poly1305 authentication so not safe **
+// poc of decrypting parts of encrypted files using xchacha20
+// also doesn't currently handle chunked encrypted data > ENCRYPTION_CHUNK_SIZE
+export async function decryptChaChaPart(
+    data: Uint8Array,
+    header: Uint8Array,
+    key: string
+) {
+    try {
+        await sodiumSumo.ready;
+        const keyUint8 = await fromB64(key);
+        const h = header.slice(0, sodiumSumo.crypto_core_hchacha20_INPUTBYTES);
+        // console.log({header, keyUint8, h});
+        const k = sodiumSumo.crypto_core_hchacha20(h, keyUint8);
+        const nonceStart = header.slice(
+            sodiumSumo.crypto_core_hchacha20_INPUTBYTES
+        );
+        const nonce = new Uint8Array(12);
+        nonce.set(nonceStart, 4);
+        nonce[0] = 1;
+        // console.log({k, nonceStart, nonce});
+
+        const inlen = data.length;
+        const mlen =
+            inlen - sodium.crypto_secretstream_xchacha20poly1305_ABYTES;
+
+        console.log({ inlen, mlen });
+
+        const block = new Uint8Array(64);
+        block.fill(0);
+        block[0] = data[0];
+        const tagBlock = sodiumSumo.crypto_stream_chacha20_ietf_xor_ic(
+            block,
+            nonce,
+            1,
+            k
+        );
+        const tag = tagBlock[0];
+        console.log({ block, tagBlock, tag });
+
+        // modify offsetBlock to get decrypted part starting from that block
+        const offsetBlock = 0;
+
+        const encTagLength = 1;
+        const blockLength = 64;
+        const startOffset = offsetBlock * blockLength;
+        const c = data.slice(startOffset + encTagLength, mlen + encTagLength);
+        const counter = offsetBlock + 2;
+
+        const dec = sodiumSumo.crypto_stream_chacha20_ietf_xor_ic(
+            c,
+            nonce,
+            counter,
+            k
+        );
+        // console.log(dec.slice(0, blockLength));
+
+        return dec;
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 export async function decryptChaCha(

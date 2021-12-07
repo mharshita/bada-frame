@@ -1,0 +1,2 @@
+thirdparty/libsodium-sumo/package.json -> git@github.com:jedisct1/libsodium.js.git/package-libsodium-sumo.json
+thirdparty/libsodium-sumo/dist/modules-sumo/libsodium-sumo.js -> git@github.com:jedisct1/libsodium.js.git/dist/modules-sumo/libsodium-sumo.js
