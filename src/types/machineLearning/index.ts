@@ -93,6 +93,8 @@ export declare type FaceDetectionMethod = 'BlazeFace' | 'FaceApiSSD';
 
 export declare type FaceCropMethod = 'ArcFace';
 
+export declare type FaceLandmarksMethod = 'BlazeFace' | 'BlazeMesh';
+
 export declare type FaceAlignmentMethod =
     | 'ArcFace'
     | 'FaceApiDlib'
@@ -118,6 +120,7 @@ export interface DetectedFace {
     landmarks: Array<Landmark>;
     probability?: number;
     faceCrop?: StoredFaceCrop;
+    landmarks3d?: Array<Landmark>;
     // detectionMethod: Versioned<FaceDetectionMethod>;
 }
 
@@ -190,6 +193,10 @@ export interface FaceCropConfig {
     };
 }
 
+export interface FaceLandmarksConfig {
+    method: FaceLandmarksMethod;
+}
+
 export interface FaceAlignmentConfig {
     method: FaceAlignmentMethod;
 }
@@ -223,6 +230,7 @@ export interface MLSyncConfig {
     imageSource: ImageType;
     faceDetection: FaceDetectionConfig;
     faceCrop: FaceCropConfig;
+    faceLandmarks: FaceLandmarksConfig;
     faceAlignment: FaceAlignmentConfig;
     faceEmbedding: FaceEmbeddingConfig;
     faceClustering: FaceClusteringConfig;
@@ -277,6 +285,8 @@ export const BLAZEFACE_SCORE_THRESHOLD = 0.7;
 export const BLAZEFACE_PASS1_SCORE_THRESHOLD = 0.4;
 export const BLAZEFACE_FACE_SIZE = 112;
 
+export const BLAZEMESH_INPUT_SIZE = 192;
+
 export interface FaceDetectionService {
     method: Versioned<FaceDetectionMethod>;
     // init(): Promise<void>;
@@ -292,6 +302,16 @@ export interface FaceCropService {
         face: DetectedFace,
         config: FaceCropConfig
     ): Promise<StoredFaceCrop>;
+}
+
+export interface FaceLandmarksService {
+    method: Versioned<FaceLandmarksMethod>;
+
+    getFaceLandmarks(
+        faceImage: ImageBitmap,
+        face: DetectedFace,
+        config: FaceLandmarksConfig
+    ): Promise<Landmark[]>;
 }
 
 export interface FaceAlignmentService {

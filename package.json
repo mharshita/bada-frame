@@ -18,6 +18,7 @@
     "@sentry/nextjs": "^6.7.1",
     "@stripe/stripe-js": "^1.13.2",
     "@tensorflow-models/blazeface": "./thirdparty/blazeface",
+    "@tensorflow-models/face-landmarks-detection": "^0.0.3",
     "@tensorflow/tfjs": "^3.11.0",
     "@tensorflow/tfjs-backend-wasm": "^3.11.0",
     "@tensorflow/tfjs-backend-webgl": "^3.11.0",

@@ -110,6 +110,7 @@ export function transformFace(face: DetectedFace, transform: Matrix) {
 
         box: transformBox(face.box, transform),
         landmarks: transformPoints(face.landmarks, transform),
+        landmarks3d: transformPoints(face.landmarks3d, transform),
     };
 }
 

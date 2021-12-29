@@ -372,6 +372,9 @@ const DEFAULT_ML_SYNC_CONFIG: MLSyncConfig = {
     faceAlignment: {
         method: 'ArcFace',
     },
+    faceLandmarks: {
+        method: 'BlazeMesh',
+    },
     faceEmbedding: {
         method: 'MobileFaceNet',
         faceSize: 112,

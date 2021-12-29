@@ -1402,6 +1402,19 @@
 "@tensorflow-models/blazeface@./thirdparty/blazeface":
   version "0.0.7-ente"
 
+"@tensorflow-models/blazeface@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@tensorflow-models/blazeface/-/blazeface-0.0.7.tgz#0a16499a0cc97fc87e11ae1f78140731c5f63bf2"
+  integrity sha512-+hInPkvHJoubfiXlmNuF3SCucZvU6W1PMC25IV99NSAftJUpKvLokfF93iX8UkOFQCXkPFbnLKacGfGlbjgvMw==
+
+"@tensorflow-models/face-landmarks-detection@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@tensorflow-models/face-landmarks-detection/-/face-landmarks-detection-0.0.3.tgz#6fdf3b49a50796acf08b7ea350f8ea5a5a45eca1"
+  integrity sha512-WFzoknHev00yEVDFDk55eKBnRDEo9EAzfi7IxxIpm+31TJfj0TX6soQPiAE/qQGoHo9MnD6CkFH189ZZuwQblw==
+  dependencies:
+    "@tensorflow-models/blazeface" "0.0.7"
+    rimraf "^3.0.2"
+
 "@tensorflow/tfjs-backend-cpu@3.11.0":
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-backend-cpu/-/tfjs-backend-cpu-3.11.0.tgz#01d5d68b91faf12bee4854adae56bc956b794f1a"
