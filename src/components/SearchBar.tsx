@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, {
+    forwardRef,
+    useContext,
+    useEffect,
+    useImperativeHandle,
+    useRef,
+    useState,
+} from 'react';
 import styled from 'styled-components';
 import AsyncSelect from 'react-select/async';
 import { components } from 'react-select';
@@ -114,7 +121,12 @@ interface Props {
     setActiveCollection: (id: number) => void;
     files: EnteFile[];
 }
-export default function SearchBar(props: Props) {
+
+export interface SearchBarRef {
+    resetSearch: () => void;
+}
+
+const SearchBar = forwardRef<SearchBarRef, Props>((props, ref) => {
     const selectRef = useRef(null);
     const [value, setValue] = useState<Suggestion>(null);
     const appContext = useContext(AppContext);
@@ -215,12 +227,14 @@ export default function SearchBar(props: Props) {
         switch (selectedOption.type) {
             case SuggestionType.DATE:
                 props.setSearch({
+                    searchTerm: selectedOption.label,
                     date: selectedOption.value as DateValue,
                 });
                 props.setOpen(true);
                 break;
             case SuggestionType.LOCATION:
                 props.setSearch({
+                    searchTerm: selectedOption.label,
                     location: selectedOption.value as Bbox,
                 });
                 props.setOpen(true);
@@ -235,7 +249,10 @@ export default function SearchBar(props: Props) {
                 setValue(null);
                 break;
             case SuggestionType.PERSON:
-                props.setSearch({ person: selectedOption.value as Person });
+                props.setSearch({
+                    searchTerm: selectedOption.label,
+                    person: selectedOption.value as Person,
+                });
                 props.setOpen(true);
                 break;
         }
@@ -252,6 +269,9 @@ export default function SearchBar(props: Props) {
         }
     };
 
+    useImperativeHandle(ref, () => ({
+        resetSearch,
+    }));
     // = =========================
     // UI
     // = =========================
@@ -444,4 +464,6 @@ export default function SearchBar(props: Props) {
             </SearchButton>
         </>
     );
-}
+});
+
+export default SearchBar;

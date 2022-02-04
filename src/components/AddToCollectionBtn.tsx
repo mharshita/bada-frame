@@ -6,8 +6,8 @@ const Wrapper = styled.button`
     background-color: #51cd7c;
     position: fixed;
     z-index: 1;
-    bottom: 20px;
-    right: 100px;
+    bottom: 5%;
+    right: 3%;
     width: 60px;
     height: 60px;
     border-radius: 50%;

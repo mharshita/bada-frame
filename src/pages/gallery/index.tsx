@@ -42,7 +42,7 @@ import MessageDialog, { MessageAttributes } from 'components/MessageDialog';
 import { useDropzone } from 'react-dropzone';
 import EnteSpinner from 'components/EnteSpinner';
 import { LoadingOverlay } from 'components/LoadingOverlay';
-import PhotoFrame from 'components/PhotoFrame';
+import PhotoFrame, { PhotoFrameRef } from 'components/PhotoFrame';
 import {
     changeFilesVisibility,
     downloadFiles,
@@ -52,7 +52,7 @@ import {
     sortFiles,
     sortFilesIntoCollections,
 } from 'utils/file';
-import SearchBar from 'components/SearchBar';
+import SearchBar, { SearchBarRef } from 'components/SearchBar';
 import SelectedFileOptions from 'components/pages/gallery/SelectedFileOptions';
 import CollectionSelector, {
     CollectionSelectorAttributes,
@@ -99,6 +99,7 @@ import { EnteFile } from 'types/file';
 import { GalleryContextType, SelectedState, Search } from 'types/gallery';
 import Collections from 'components/pages/gallery/Collections';
 import { VISIBILITY_STATE } from 'constants/file';
+import AddToCollectionBtn from 'components/AddToCollectionBtn';
 
 export const DeadCenter = styled.div`
     flex: 1;
@@ -158,6 +159,7 @@ export default function Gallery() {
         useState<CollectionNamerAttributes>(null);
     const [collectionNamerView, setCollectionNamerView] = useState(false);
     const [search, setSearch] = useState<Search>({
+        searchTerm: null,
         date: null,
         location: null,
         fileIndex: null,
@@ -190,6 +192,8 @@ export default function Gallery() {
     const [fixCreationTimeView, setFixCreationTimeView] = useState(false);
     const [fixCreationTimeAttributes, setFixCreationTimeAttributes] =
         useState<FixCreationTimeAttributes>(null);
+    const photoFrameRef = useRef<PhotoFrameRef>(null);
+    const searchBarRef = useRef<SearchBarRef>(null);
 
     const showPlanSelectorModal = () => setPlanModalView(true);
     const closeMessageDialog = () => setMessageDialogView(false);
@@ -356,13 +360,15 @@ export default function Gallery() {
         return <div />;
     }
     const collectionOpsHelper =
-        (ops: COLLECTION_OPS_TYPE) => async (collection: Collection) => {
+        (ops: COLLECTION_OPS_TYPE) =>
+        async (collection: Collection, _selected?: SelectedState) => {
             startLoading();
             try {
+                console.log(_selected);
                 await handleCollectionOps(
                     ops,
                     setCollectionSelectorView,
-                    selected,
+                    _selected ?? selected,
                     files,
                     setActiveCollection,
                     collection
@@ -418,16 +424,17 @@ export default function Gallery() {
         }
     };
 
-    const showCreateCollectionModal = (ops: COLLECTION_OPS_TYPE) => {
-        const callback = async (collectionName: string) => {
+    const createCollectionHelper =
+        (ops: COLLECTION_OPS_TYPE, _selected?: SelectedState) =>
+        async (collectionName: string) => {
             try {
                 const collection = await createCollection(
                     collectionName,
                     CollectionType.album,
                     collections
                 );
-
-                await collectionOpsHelper(ops)(collection);
+                searchBarRef.current?.resetSearch();
+                await collectionOpsHelper(ops)(collection, _selected);
             } catch (e) {
                 logError(e, 'create and collection ops failed');
                 setDialogMessage({
@@ -438,14 +445,17 @@ export default function Gallery() {
                 });
             }
         };
-        return () =>
+
+    const showCreateCollectionModal =
+        (ops: COLLECTION_OPS_TYPE) =>
+        (autoFilledName?: string, _selected?: SelectedState) => {
             setCollectionNamerAttributes({
                 title: constants.CREATE_COLLECTION,
                 buttonText: constants.CREATE,
-                autoFilledName: '',
-                callback,
+                autoFilledName: autoFilledName || '',
+                callback: createCollectionHelper(ops, _selected),
             });
-    };
+        };
 
     const deleteFileHelper = async (permanent?: boolean) => {
         startLoading();
@@ -544,6 +554,23 @@ export default function Gallery() {
         finishLoading();
     };
 
+    const saveSearchResult = async () => {
+        const searchResultsFiles =
+            photoFrameRef.current?.getAllCurrentFilteredData();
+        let suggestedName = search.searchTerm;
+        if (search.location) {
+            suggestedName = suggestedName.split(',')[0];
+        }
+        suggestedName += ' pics';
+        console.log();
+
+        showCreateCollectionModal(COLLECTION_OPS_TYPE.ADD)(suggestedName, {
+            count: searchResultsFiles.length,
+            ...Object.fromEntries(searchResultsFiles.map((id) => [id, true])),
+            collectionID: activeCollection,
+        });
+    };
+
     return (
         <GalleryContext.Provider
             value={{
@@ -584,6 +611,7 @@ export default function Gallery() {
                     attributes={dialogMessage}
                 />
                 <SearchBar
+                    ref={searchBarRef}
                     isOpen={isInSearchMode}
                     setOpen={setIsInSearchMode}
                     isFirstFetch={isFirstFetch}
@@ -658,6 +686,7 @@ export default function Gallery() {
                     openFileUploader={openFileUploader}
                 />
                 <PhotoFrame
+                    ref={photoFrameRef}
                     files={files}
                     setFiles={setFiles}
                     syncWithRemote={syncWithRemote}
@@ -727,6 +756,9 @@ export default function Gallery() {
                     )}
                 {activeCollection === TRASH_SECTION && trash?.length > 0 && (
                     <DeleteBtn onClick={emptyTrashHandler} />
+                )}
+                {isInSearchMode && (
+                    <AddToCollectionBtn onClick={saveSearchResult} />
                 )}
             </FullScreenDropZone>
         </GalleryContext.Provider>

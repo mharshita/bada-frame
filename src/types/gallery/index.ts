@@ -15,6 +15,7 @@ export type SetLoading = React.Dispatch<React.SetStateAction<Boolean>>;
 export type setSearchStats = React.Dispatch<React.SetStateAction<SearchStats>>;
 
 export type Search = {
+    searchTerm?: string;
     date?: DateValue;
     location?: Bbox;
     fileIndex?: number;
