@@ -116,7 +116,7 @@ interface Props {
     filteredData: EnteFile[];
     showAppDownloadBanner: boolean;
     getThumbnail: (files: EnteFile[], index: number) => JSX.Element;
-    activeCollection: number;
+    listKey: string;
     resetFetching: () => void;
 }
 
@@ -126,7 +126,7 @@ export function PhotoList({
     filteredData,
     showAppDownloadBanner,
     getThumbnail,
-    activeCollection,
+    listKey,
     resetFetching,
 }: Props) {
     const timeStampListRef = useRef([]);
@@ -446,7 +446,7 @@ export function PhotoList({
 
     return (
         <List
-            key={`${activeCollection}`}
+            key={listKey}
             ref={listRef}
             itemSize={getItemSize(timeStampList)}
             height={height}

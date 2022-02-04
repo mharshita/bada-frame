@@ -509,7 +509,7 @@ const PhotoFrame = ({
                                 height={height}
                                 getThumbnail={getThumbnail}
                                 filteredData={filteredData}
-                                activeCollection={activeCollection}
+                                listKey={`${activeCollection}-${isInSearchMode}`}
                                 showAppDownloadBanner={
                                     files.length < 30 && !isInSearchMode
                                 }
