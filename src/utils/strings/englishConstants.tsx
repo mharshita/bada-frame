@@ -99,7 +99,7 @@ const englishConstants = {
     ENTER_ALBUM_NAME: 'album name',
     CLOSE: 'close',
     NO: 'no',
-    NOTHING_HERE: 'nothing to see here, yet',
+    NOTHING_HERE: 'nothing to see here eyes 👀',
     UPLOAD: {
         0: 'preparing to upload',
         1: 'reading google metadata files',
@@ -630,7 +630,7 @@ const englishConstants = {
     OPEN_PLAN_SELECTOR_MODAL_FAILED: 'failed to open plans',
     COMMENT: 'comment',
     ABUSE_REPORT_DESCRIPTION:
-        'Note: Submitting this report will notify the album owner.',
+        'submitting this report will notify the album owner.',
     OTHER_REASON_REQUIRES_COMMENTS:
         'reason = other, require  a mandatory comment ',
     REPORT_SUBMIT_SUCCESS_CONTENT: 'your report has been submitted',
@@ -671,6 +671,8 @@ const englishConstants = {
     TERM_1: 'I hereby state that I have a good faith belief that the sharing of copyrighted material at the location above is not authorized by the copyright owner, its agent, or the law (e.g., as a fair use). ',
     TERM_2: 'I hereby state that the information in this Notice is accurate and, under penalty of perjury, that I am the owner, or authorized to act on behalf of, the owner, of the copyright or of an exclusive right under the copyright that is allegedly infringed. ',
     TERM_3: 'I acknowledge that any person who knowingly materially misrepresents that material or activity is infringing may be subject to liability for damages. ',
+    PRESERVED_BY: 'preserved by',
+    ENTE_IO: 'ente.io',
 };
 
 export default englishConstants;

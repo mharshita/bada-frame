@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, ChangeEvent } from 'react';
 import { getData, LS_KEYS } from 'utils/storage/localStorage';
 import { useRouter } from 'next/router';
-import { ComlinkWorker } from 'utils/crypto';
 import { AppContext } from 'pages/_app';
 import { PAGES } from 'constants/pages';
 import * as Comlink from 'comlink';
@@ -41,6 +40,7 @@ import {
     DEFAULT_ML_SYNC_JOB_CONFIG,
 } from 'constants/machineLearning/config';
 import { exportMlData, importMlData } from 'utils/machineLearning/mldataExport';
+import { ComlinkWorker } from 'utils/comlink';
 
 interface TSNEProps {
     mlResult: MLDebugResult;

@@ -23,6 +23,7 @@ import {
     VISIBILITY_STATE,
 } from 'constants/file';
 import PublicCollectionDownloadManager from 'services/publicCollectionDownloadManager';
+import HEICConverter from 'services/HEICConverter';
 
 export function downloadAsFile(filename: string, content: string) {
     const file = new Blob([content], {
@@ -317,6 +318,7 @@ export function generateStreamFromArrayBuffer(data: Uint8Array) {
 export async function convertForPreview(
     file: EnteFile,
     fileBlob: Blob,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     usingWorker?: any
 ) {
     if (file.metadata.fileType === FILE_TYPE.LIVE_PHOTO) {
@@ -326,13 +328,12 @@ export async function convertForPreview(
     }
 
     const typeFromExtension = getFileExtension(file.metadata.title);
-    const worker = usingWorker || (await new CryptoWorker());
     const reader = new FileReader();
 
     const mimeType =
         (await getMimeTypeFromBlob(reader, fileBlob)) ?? typeFromExtension;
     if (isFileHEIC(mimeType)) {
-        fileBlob = await worker.convertHEIC2JPEG(fileBlob);
+        fileBlob = await HEICConverter.convert(fileBlob);
     }
     return fileBlob;
 }

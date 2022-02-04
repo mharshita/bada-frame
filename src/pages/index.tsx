@@ -14,8 +14,6 @@ import IncognitoWarning from 'components/IncognitoWarning';
 import { logError } from 'utils/sentry';
 import { getAlbumSiteHost, PAGES } from 'constants/pages';
 
-const ALBUM_SITE_HOST = getAlbumSiteHost();
-
 const Container = styled.div`
     display: flex;
     flex: 1;
@@ -108,6 +106,7 @@ export default function LandingPage() {
     useEffect(() => {
         appContext.showNavBar(false);
         const currentURL = new URL(window.location.href);
+        const ALBUM_SITE_HOST = getAlbumSiteHost();
         currentURL.pathname = router.pathname;
         if (
             currentURL.host === ALBUM_SITE_HOST &&
@@ -120,23 +119,13 @@ export default function LandingPage() {
     }, []);
 
     const handleAlbumsRedirect = async (currentURL: URL) => {
-        await router.push({
+        const end = currentURL.hash.lastIndexOf('&');
+        const hash = currentURL.hash.slice(1, end !== -1 ? end : undefined);
+        await router.replace({
             pathname: PAGES.SHARED_ALBUMS,
             search: currentURL.search,
-            hash: currentURL.hash,
+            hash: hash,
         });
-        await router.push(
-            {
-                pathname: PAGES.SHARED_ALBUMS,
-                search: currentURL.search,
-                hash: currentURL.hash,
-            },
-            {
-                pathname: PAGES.ROOT,
-                search: currentURL.search,
-                hash: currentURL.hash,
-            }
-        );
         await initLocalForage();
     };
 

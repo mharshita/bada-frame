@@ -17,7 +17,7 @@ import {
     MLLibraryData,
 } from 'types/machineLearning';
 import { CONCURRENCY } from 'utils/common/concurrency';
-import { ComlinkWorker, getDedicatedCryptoWorker } from 'utils/crypto';
+import { getDedicatedCryptoWorker } from 'utils/crypto';
 import { logQueueStats } from 'utils/machineLearning';
 import arcfaceAlignmentService from './arcfaceAlignmentService';
 import arcfaceCropService from './arcfaceCropService';
@@ -25,6 +25,7 @@ import hdbscanClusteringService from './hdbscanClusteringService';
 import blazeFaceDetectionService from './blazeFaceDetectionService';
 import mobileFaceNetEmbeddingService from './mobileFaceNetEmbeddingService';
 import dbscanClusteringService from './dbscanClusteringService';
+import { ComlinkWorker } from 'utils/comlink';
 
 export class MLFactory {
     public static getFaceDetectionService(
